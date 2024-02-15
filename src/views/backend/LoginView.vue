@@ -18,8 +18,8 @@
               class="input-text"
               autocomplete="off"
             />
-            <div v-if="emailErrorMessage" class="uk-text-danger">
-              {{ "*" + emailErrorMessage }}
+            <div v-if="formErrorMessage.message" class="uk-text-danger">
+              {{ "*" + formErrorMessage.message }}
             </div>
           </div>
           <div class="form-row mb-10">
@@ -38,8 +38,8 @@
               class="input-text"
               autocomplete="off"
             />
-            <div v-if="passwordErrorMessage" class="uk-text-danger">
-              {{ "*" + passwordErrorMessage }}
+            <div v-if="formErrorMessage.password" class="uk-text-danger">
+              {{ "*" + formErrorMessage.password }}
             </div>
           </div>
           <div class="form-row mb-20">
@@ -55,35 +55,38 @@
 <script setup>
   import { ref } from 'vue';
   import axios from '@/config/axios.js';
+  import csrf from '@/config/csrf.js'
   import { useRouter } from 'vue-router';
 
   const email = ref('')
   const password = ref('')
-  const emailErrorMessage = ref('')
-  const passwordErrorMessage = ref('')
+  const formErrorMessage = ref({})
   const router = useRouter()
 
   const handleLogin = async () => {
     try {
+      await csrf.getCookie();
+      
       const response = await axios.post('auth/login', {
         email: email.value,
         password: password.value
       })
 
-      if (response.status == 401) {
-        emailErrorMessage.value = response.data.email
-        passwordErrorMessage.value = response.data.password
-      } else {
-        router.push({name: 'dashboard.index'})
-      }
+      localStorage.setItem('token', response.token)
+      router.push({name: 'dashboard.index'})
     } catch (error) {
-      console.log(error)
-
-      if (error.response.status.length && error.response.status == 401) {
-        emailErrorMessage.value = error.response.data.message
-        passwordErrorMessage.value = ''
+    
+      formErrorMessage.value = {};
+      if (error.response.status == 422) {
+        Object.keys(error.response.data.errors).forEach((key) => {
+          formErrorMessage.value[key] = error.response.data.errors[key][0];
+        });
+      }else {
+        formErrorMessage.value.message = error.response.data.message
       }
+
     }
+
   }
 </script>
 

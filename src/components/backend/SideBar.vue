@@ -8,81 +8,65 @@
       <div class="role">Quản trị viên</div>
     </div>
     <div class="aside-body">
-      <ul class="uk-list uk-clearfix task-list">
-        <li class="task-item">
-          <span class="task-name">Main</span>
-        </li>
-        <li>
-          <a href="" class="active">
+      <ul uk-accordion class="task-list uk-list uk-clearfix">
+        <li v-for="item in sidebarData" :key="item.name">
+          <a href="" class="uk-accordion-title">
             <div class="uk-flex uk-flex-middle">
               <span class="task-icon">
-                <i class="bx bx-home"></i>
+                <i :class="item.icon"></i>
               </span>
-              <span class="nav-label">Dashboard</span>
-              <span class="task-icon arrow">
-                <i class="bx bx-chevron-right"></i>
-              </span>
+              <span class="nav-label">{{ item.name }}</span>
             </div>
           </a>
-        </li>
-        <li>
-          <a href="">
-            <div class="uk-flex uk-flex-middle">
-              <span class="task-icon">
-                <i class="bx bx-cart"></i>
-              </span>
-              <span class="nav-label">Ql Sản Phẩm</span>
-              <span class="task-icon arrow">
-                <i class="bx bx-chevron-right"></i>
-              </span>
-            </div>
-          </a>
-        </li>
-        <li>
-          <a href="">
-            <div class="uk-flex uk-flex-middle">
-              <span class="task-icon">
-                <i class="bx bx-file"></i>
-              </span>
-              <span class="nav-label">QL Bài Viết</span>
-              <span class="task-icon arrow">
-                <i class="bx bx-chevron-right"></i>
-              </span>
-            </div>
-          </a>
-        </li>
-        <li>
-          <a href="">
-            <div class="uk-flex uk-flex-middle">
-              <span class="task-icon">
-                <i class="bx bx-shopping-bag"></i>
-              </span>
-              <span class="nav-label">QL Đơn hàng</span>
-              <span class="task-icon arrow">
-                <i class="bx bx-chevron-right"></i>
-              </span>
-            </div>
-          </a>
-        </li>
-        <li>
-          <a href="">
-            <div class="uk-flex uk-flex-middle">
-              <span class="task-icon">
-                <i class="bx bx-cog"></i>
-              </span>
-              <span class="nav-label">Cấu hình hệ thống</span>
-              <span class="task-icon arrow">
-                <i class="bx bx-chevron-right"></i>
-              </span>
-            </div>
-          </a>
+          <div class="uk-accordion-content">
+            <ul class="sub-module uk-list uk-clear-fix">
+              <li v-for="sub in item.subModule" :key="sub.name">
+                <router-link :to="sub.route">{{ sub.name }}</router-link>
+              </li>
+            </ul>
+          </div>
         </li>
       </ul>
     </div>
   </aside>
 </template>
 
-<script setup></script>
+<script>
+import axios from "@/config/axios.js";
+import csrf from "@/config/csrf";
+
+export default {
+  data() {
+    return {
+      sidebarData: null,
+      showSubModule: false,
+    };
+  },
+  mounted() {
+    this.getSidebarData();
+  },
+  methods: {
+    async getSidebarData() {
+      try {
+        await csrf.getCookie();
+        const token = localStorage.getItem("token");
+        const response = await axios.get("dashboard/getModule", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        this.sidebarData = response.data;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    toggleSubModule(item) {
+      item.showSubModule = !item.showSubModule;
+    },
+  },
+};
+</script>
 
 <style scoped>
 .app-sidebar {
@@ -90,6 +74,7 @@
   width: 240px;
   background: #111c43;
   color: #a3aed1;
+  position: absolute;
 }
 .app-sidebar .aside-head {
   padding: 20px;
@@ -117,7 +102,7 @@
   padding: 0 10px;
 }
 
-.app-sidebar .task-list li > * {
+.app-sidebar .task-list > li > a {
   padding: 13px 12px;
   position: relative;
   text-decoration: none;
@@ -130,14 +115,14 @@
   font-weight: 500;
 }
 
-.app-sidebar .task-list li:hover a,
-.app-sidebar .task-list li .active {
+.app-sidebar .task-list > li:hover > a,
+.app-sidebar .task-list > li > .active {
   background: rgba(255, 255, 255, 0.05);
   color: #fff;
   border-radius: 8px;
 }
-.app-sidebar .task-list li:hover a,
-.app-sidebar .task-list li .active a {
+.app-sidebar .task-list li:hover > a,
+.app-sidebar .task-list li .active > a {
   color: #fff;
 }
 .app-sidebar .task-list li > a .task-icon {
@@ -160,5 +145,27 @@
   font-weight: 700 !important;
   font-size: 11px !important;
   padding-left: 10px !important;
+}
+.sub-module {
+  padding-left: 20px;
+  transition: max-height 0.5s ease;
+  margin: 0;
+}
+.sub-module > li > a {
+  font-size: 13px;
+  color: #a3aed1;
+}
+.sub-module li {
+  position: relative;
+  padding-left: 10px;
+}
+
+.uk-accordion-title::before {
+  width: 10px;
+  height: 9px;
+  filter: brightness(0) invert(1);
+  position: absolute;
+  top:18px;
+  right:10px;
 }
 </style>
