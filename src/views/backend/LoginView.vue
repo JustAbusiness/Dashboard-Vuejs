@@ -26,8 +26,8 @@
             <div class="label">
               <div class="uk-flex uk-flex-between">
                 <span>Mật khẩu</span>
-                <router-link to="/dashboard" class="forgot"
-                  >Quên mật khẩu?</router-link
+                <router-link to="/dashboard" class="forgot">
+                  Quên mật khẩu ?</router-link
                 >
               </div>
             </div>
@@ -52,43 +52,39 @@
   </div>
 </template>
 
-<script>
-    import { BACKEND_API } from '@/config/constant.js'
-    import axios from 'axios';
-    export default {
-        data() {
-            return {
-                email: '',
-                password: '',
-                emailErrorMessage: '',
-                passwordErrorMessage: ''
-            }
-        },
-        methods: {
-            async handleLogin() {
-                try {
-                    let object = {
-                        email: this.email,
-                        password: this.password
-                    };
+<script setup>
+  import { ref } from 'vue';
+  import axios from '@/config/axios.js';
+  import { useRouter } from 'vue-router';
 
-                    const response =  await axios.post(BACKEND_API + 'auth/login', object);
-                    
-                    if (response.data.status == 401) {
-                        this.emailErrorMessage = response.data.data.email;
-                        this.passwordErrorMessage = response.data.data.password;
-                    } else {
-                        console.log(response)
-                    }
+  const email = ref('')
+  const password = ref('')
+  const emailErrorMessage = ref('')
+  const passwordErrorMessage = ref('')
+  const router = useRouter()
 
+  const handleLogin = async () => {
+    try {
+      const response = await axios.post('auth/login', {
+        email: email.value,
+        password: password.value
+      })
 
-                } catch (error) {
-                    console.log(error)
-                }
-            },
-        }
+      if (response.status == 401) {
+        emailErrorMessage.value = response.data.email
+        passwordErrorMessage.value = response.data.password
+      } else {
+        router.push({name: 'dashboard.index'})
+      }
+    } catch (error) {
+      console.log(error)
+
+      if (error.response.status.length && error.response.status == 401) {
+        emailErrorMessage.value = error.response.data.message
+        passwordErrorMessage.value = ''
+      }
     }
-
+  }
 </script>
 
 <style scoped>
