@@ -10,6 +10,9 @@
           </div>
         </div>
         <div class="panel-body">
+          <div v-if="formErrorMessage.message" class="uk-text-danger">
+            {{ "*" + formErrorMessage.message }}
+          </div>
           <div class="form-row mb-5">
             <div class="label">Tên đăng nhập</div>
             <input
@@ -18,8 +21,8 @@
               class="input-text"
               autocomplete="off"
             />
-            <div v-if="formErrorMessage.message" class="uk-text-danger">
-              {{ "*" + formErrorMessage.message }}
+            <div v-if="formErrorMessage.email" class="uk-text-danger">
+              {{ "*" + formErrorMessage.email }}
             </div>
           </div>
           <div class="form-row mb-10">
@@ -53,41 +56,36 @@
 </template>
 
 <script setup>
-  import { ref } from 'vue';
-  import axios from '@/config/axios.js';
-  import csrf from '@/config/csrf.js'
-  import { useRouter } from 'vue-router';
+import { ref } from "vue";
+import axios from "@/config/axios.js";
+import csrf from "@/config/csrf.js";
+import { useRouter } from "vue-router";
+import { useStore } from "vuex";
 
-  const email = ref('')
-  const password = ref('')
-  const formErrorMessage = ref({})
-  const router = useRouter()
+const email = ref("");
+const password = ref("");
+const formErrorMessage = ref({});
+const router = useRouter();
+const store = useStore();
 
-  const handleLogin = async () => {
-    try {
-      await csrf.getCookie();
-      
-      const response = await axios.post('auth/login', {
-        email: email.value,
-        password: password.value
-      })
-
-      localStorage.setItem('token', response.token)
-      router.push({name: 'dashboard.index'})
-    } catch (error) {
-    
-      formErrorMessage.value = {};
-      if (error.response.status == 422) {
-        Object.keys(error.response.data.errors).forEach((key) => {
-          formErrorMessage.value[key] = error.response.data.errors[key][0];
-        });
-      }else {
-        formErrorMessage.value.message = error.response.data.message
-      }
-
+const handleLogin = async () => {
+  try {
+    await store.dispatch("login", {
+      email: email.value,
+      password: password.value,
+    })
+    router.push({ name: "dashboard.index" });
+  } catch (error) {
+    formErrorMessage.value = {};
+    if (error.response.status == 422) {
+      Object.keys(error.response.data.errors).forEach((key) => {
+        formErrorMessage.value[key] = error.response.data.errors[key][0];
+      });
+    } else {
+      formErrorMessage.value.message = error.response.data.message;
     }
-
   }
+};
 </script>
 
 <style scoped>

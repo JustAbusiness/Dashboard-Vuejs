@@ -34,6 +34,7 @@
 <script>
 import axios from "@/config/axios.js";
 import csrf from "@/config/csrf";
+import { store } from "@/store";
 
 export default {
   data() {
@@ -48,8 +49,9 @@ export default {
   methods: {
     async getSidebarData() {
       try {
+        const token = store.state.token;
+        
         await csrf.getCookie();
-        const token = localStorage.getItem("token");
         const response = await axios.get("dashboard/getModule", {
           headers: {
             Authorization: `Bearer ${token}`,
