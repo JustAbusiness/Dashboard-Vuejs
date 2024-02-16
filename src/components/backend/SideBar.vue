@@ -1,10 +1,10 @@
 <template>
   <aside id="sidebar" class="app-sidebar">
-    <div class="aside-head">
+    <div class="aside-head" v-if="this.user">
       <span class="image img-cover profile-image"
         ><img src="@/assets/me.jpg" alt=""
       /></span>
-      <div class="name">Pham Ngoc Huy</div>
+      <div class="name">{{ user.name }}</div>
       <div class="role">Quản trị viên</div>
     </div>
     <div class="aside-body">
@@ -34,29 +34,27 @@
 <script>
 import axios from "@/config/axios.js";
 import csrf from "@/config/csrf";
-import { store } from "@/store";
+import {useStore} from "vuex";
+
+
 
 export default {
   data() {
     return {
       sidebarData: null,
       showSubModule: false,
+      user: null
     };
   },
   mounted() {
-    this.getSidebarData();
+    this.getSidebarData()
+    this.getProfile()
   },
   methods: {
     async getSidebarData() {
       try {
-        const token = store.state.token;
-        
         await csrf.getCookie();
-        const response = await axios.get("dashboard/getModule", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await axios.get("/dashboard/getModule");
 
         this.sidebarData = response.data;
       } catch (error) {
@@ -66,6 +64,12 @@ export default {
     toggleSubModule(item) {
       item.showSubModule = !item.showSubModule;
     },
+    async getProfile() {
+     const store = useStore();
+     this.user = store.state.user;
+  
+     console.log(store)
+    }
   },
 };
 </script>

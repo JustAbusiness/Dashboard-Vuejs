@@ -1,6 +1,6 @@
 <template>
   <div id="wrapper" class="h-[100vh]">
-    <SideBar></SideBar>
+    <SideBar/>
     <div class="page-wrapper">
       <nav class="navbar">
         <div class="uk-flex uk-flex-between uk-flex-middle">
@@ -28,39 +28,41 @@
   </div>
 </template>
 
-<script>
-  import SideBar from './SideBar.vue';
-  export default {
-      data() {
-      return {
-        token: null
-      };
-    },
-    mounted() {
-      this.setToken();
-    },
-    methods: {
-      async setToken() {
-        try {
-          const token = store.state.token;
+<script setup>
+import SideBar from "./SideBar.vue";
+// import { store } from "@/store";
+// import csrf from "@/config/csrf";
+// import axios from "@/config/axios";
 
-          await csrf.getCookie();
-          const response = await axios.get("dashboard/getModule", {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
+// export default {
+//   data() {
+//     return {
+//       token: null,
+//       user: null
+//     };
+//   },
+//   mounted() {
+//     // this.setToken();
+//   },
+//   methods: {
+//     // async setToken() {
+//     //   const token = store.state.token;                      // STATE TOKEN FROM VUEX STORE
+//     //   if (!token) {
+//     //     try {
+//     //       await csrf.getCookie();
+//     //       const response = await axios.get("auth/getAuthCookie");
 
-          this.sidebarData = response.data;
-        } catch (error) {
-          console.log(error);
-        }
-      },
-      toggleSubModule(item) {
-        item.showSubModule = !item.showSubModule;
-      },
-  }
-}
+//     //       this.token = response.data;
+//     //     } catch (error) {
+//     //       console.log(error);
+//     //     }
+//     //   }
+//     // },
+//     toggleSubModule(item) {
+//       item.showSubModule = !item.showSubModule;
+//     },
+//   },
+// };
 </script>
 
 <style scoped>

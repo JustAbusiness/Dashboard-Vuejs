@@ -19,7 +19,7 @@ export const store = createStore({
   actions: {
     async login({ commit }, { email, password }) {
       await csrf.getCookie();
-      const response = await axios.post("auth/login", {
+      const response = await axios.post("/auth/login", {
         email: email,
         password: password,
       });
