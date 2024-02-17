@@ -11,7 +11,7 @@
 <script setup>
 import Layout from '@/components/backend/Layout.vue';
 
-        
+
 </script>
 
 <style scoped>

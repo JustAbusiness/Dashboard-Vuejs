@@ -1,6 +1,7 @@
 import csrf from "@/config/csrf.js";
 import axios from "@/config/axios.js";
 
+
 const state = {
   authCheck: false,
   user: null,
@@ -33,6 +34,7 @@ const actions = {
     // SAVE TO LOCAL STORAGE
     localStorage.setItem("token", response.token);
     localStorage.setItem("token_expires", response.token_exprires_at);
+
     commit("loginSuccess", {
       authCheck: true,
       token: response.token,

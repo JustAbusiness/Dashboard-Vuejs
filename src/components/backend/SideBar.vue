@@ -34,8 +34,8 @@
 <script setup>
 import axios from "@/config/axios.js";
 import csrf from "@/config/csrf";
-import {useStore, mapGetters} from "vuex";
-import { computed, onMounted, ref } from "vue";
+import {useStore} from "vuex";
+import { ref, watchEffect } from "vue";
 
 
 const sidebarData = ref([])
@@ -46,7 +46,7 @@ const renderSidebar = async () => {
     sidebarData.value = sidebar;
 }
 
-onMounted(() => {
+watchEffect(() => {
   renderSidebar()
 })
 

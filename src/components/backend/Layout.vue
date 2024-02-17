@@ -31,22 +31,37 @@
 <script setup>
 import { onBeforeMount } from "vue";
 import SideBar from "./SideBar.vue";
-import { store } from '@/store'
+import { store } from "@/store";
+import { toast } from "vue3-toastify";
+import "vue3-toastify/dist/index.css";
+
+
 
 const setLanguage = () => {
-    store.commit("auth/setLanguage", 'vn');
-}
+  store.commit("auth/setLanguage", "vn");
+};
 const setToken = () => {
-    const token = localStorage.getItem("token");
-    store.commit("auth/setToken", token);
-}
+  const token = localStorage.getItem("token");
+  store.commit("auth/setToken", token);
+};
+
+const showNotification = () => {
+  const message = store.getters["message/getMessage"];
+  const type = store.getters["message/getType"];
+  if (message !== null) {
+    if (type === "error") {
+      toast.error(message.message);
+    }
+    toast.success(message);
+    store.dispatch("message/clearMessage");
+  }
+};
 
 onBeforeMount(() => {
-    setToken()
-    setLanguage()
+  setToken();
+  setLanguage();
+  showNotification();
 });
-
-
 </script>
 
 <style scoped>

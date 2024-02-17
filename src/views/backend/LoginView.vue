@@ -73,7 +73,9 @@ const handleLogin = async () => {
     await store.dispatch("auth/login", {
       email: email.value,
       password: password.value,
-    })
+    });
+
+    store.dispatch("message/showMessage", { message: 'Login success', type: 'success' });
     router.push({ name: "dashboard.index" });
   } catch (error) {
     formErrorMessage.value = {};
