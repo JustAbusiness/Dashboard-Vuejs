@@ -70,7 +70,7 @@ const store = useStore();
 
 const handleLogin = async () => {
   try {
-    await store.dispatch("login", {
+    await store.dispatch("auth/login", {
       email: email.value,
       password: password.value,
     })

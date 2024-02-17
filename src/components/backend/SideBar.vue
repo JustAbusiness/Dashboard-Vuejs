@@ -1,10 +1,10 @@
 <template>
   <aside id="sidebar" class="app-sidebar">
-    <div class="aside-head" v-if="this.user">
+    <div class="aside-head" >
       <span class="image img-cover profile-image"
         ><img src="@/assets/me.jpg" alt=""
       /></span>
-      <div class="name">{{ user.name }}</div>
+      <div class="name">Robert Pham</div>
       <div class="role">Quản trị viên</div>
     </div>
     <div class="aside-body">
@@ -31,47 +31,62 @@
   </aside>
 </template>
 
-<script>
+<script setup>
 import axios from "@/config/axios.js";
 import csrf from "@/config/csrf";
-import {useStore} from "vuex";
+import {useStore, mapGetters} from "vuex";
+import { computed, onMounted, ref } from "vue";
 
 
+const sidebarData = ref([])
+const store = useStore();
+const sidebar = store.getters["language/getSidebar"]; 
 
-export default {
-  data() {
-    return {
-      sidebarData: null,
-      showSubModule: false,
-      user: null
-    };
-  },
-  mounted() {
-    this.getSidebarData()
-    this.getProfile()
-  },
-  methods: {
-    async getSidebarData() {
-      try {
-        await csrf.getCookie();
-        const response = await axios.get("/dashboard/getModule");
+const renderSidebar = async () => {
+    sidebarData.value = sidebar;
+}
 
-        this.sidebarData = response.data;
-      } catch (error) {
-        console.log(error);
-      }
-    },
-    toggleSubModule(item) {
-      item.showSubModule = !item.showSubModule;
-    },
-    async getProfile() {
-     const store = useStore();
-     this.user = store.state.user;
+onMounted(() => {
+  renderSidebar()
+})
+
+// export default {
+//   data() {
+//     return {
+//       sidebarData: null,
+//       showSubModule: false,
+//       user: null
+//     };
+//   },
+//   computed: {
+//     ...mapGetters('auth', ['getToken']),
+//   },
+//   mounted() {
+//     this.getSidebarData()
+//     this.getProfile()
+//   },
+//   methods: {
+//     async getSidebarData() {
+//       try {
+//         // await csrf.getCookie();
+//         // const response = await axios.get("/dashboard/getModule");
+
+//         this.sidebarData = sidebar;
+//       } catch (error) {
+//         console.log(error);
+//       }
+//     },
+//     toggleSubModule(item) {
+//       item.showSubModule = !item.showSubModule;
+//     },
+//     async getProfile() {
+//      const store = useStore();
+//      this.user = store.state.user;
   
-     console.log(store)
-    }
-  },
-};
+//      console.log(store)
+//     }
+//   },
+// };
 </script>
 
 <style scoped>

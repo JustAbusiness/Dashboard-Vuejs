@@ -1,6 +1,6 @@
 <template>
   <div id="wrapper" class="h-[100vh]">
-    <SideBar/>
+    <SideBar />
     <div class="page-wrapper">
       <nav class="navbar">
         <div class="uk-flex uk-flex-between uk-flex-middle">
@@ -29,40 +29,24 @@
 </template>
 
 <script setup>
+import { onBeforeMount } from "vue";
 import SideBar from "./SideBar.vue";
-// import { store } from "@/store";
-// import csrf from "@/config/csrf";
-// import axios from "@/config/axios";
+import { store } from '@/store'
 
-// export default {
-//   data() {
-//     return {
-//       token: null,
-//       user: null
-//     };
-//   },
-//   mounted() {
-//     // this.setToken();
-//   },
-//   methods: {
-//     // async setToken() {
-//     //   const token = store.state.token;                      // STATE TOKEN FROM VUEX STORE
-//     //   if (!token) {
-//     //     try {
-//     //       await csrf.getCookie();
-//     //       const response = await axios.get("auth/getAuthCookie");
+const setLanguage = () => {
+    store.commit("auth/setLanguage", 'vn');
+}
+const setToken = () => {
+    const token = localStorage.getItem("token");
+    store.commit("auth/setToken", token);
+}
 
-//     //       this.token = response.data;
-//     //     } catch (error) {
-//     //       console.log(error);
-//     //     }
-//     //   }
-//     // },
-//     toggleSubModule(item) {
-//       item.showSubModule = !item.showSubModule;
-//     },
-//   },
-// };
+onBeforeMount(() => {
+    setToken()
+    setLanguage()
+});
+
+
 </script>
 
 <style scoped>
