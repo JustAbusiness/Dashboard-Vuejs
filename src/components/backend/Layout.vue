@@ -2,7 +2,8 @@
   <div id="wrapper" class="h-[100vh]">
     <SideBar />
     <div class="page-wrapper">
-      <nav class="navbar">
+        <Navbar />
+      <!-- <nav class="navbar">
         <div class="uk-flex uk-flex-between uk-flex-middle">
           <button class="collapse-menu">
             <i class="bx bx-menu-alt-left text-2xl"></i>
@@ -22,7 +23,7 @@
             </div>
           </div>
         </div>
-      </nav>
+      </nav> -->
       <slot name="template"></slot>
     </div>
   </div>
@@ -34,6 +35,7 @@ import SideBar from "./SideBar.vue";
 import { store } from "@/store";
 import { toast } from "vue3-toastify";
 import "vue3-toastify/dist/index.css";
+import Navbar from "./Navbar.vue";
 
 
 

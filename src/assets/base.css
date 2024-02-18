@@ -2,6 +2,10 @@
   --primary-color: #000;
   --secondary-color: rgb(122, 137, 142);
 }
+:root {
+  --primary-bg: rgb(132,90,223);
+ 
+}
 
 *,
 *::before,

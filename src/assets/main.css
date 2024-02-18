@@ -11,7 +11,7 @@ body{
 	margin:0;
 	height:100%;
 	background: #f0f1f7;
-	font-family: 'Montserrat';
+	font-family: 'Roboto Flex', sans-serif;
 	font-size:14px;
 	font-weight: 400;
 }
@@ -96,5 +96,9 @@ ul{
 
 .app-sidebar .uk-icon{
 	color:#a3aed1 !important;
+}
+
+.bg-primary{
+	background:rgb(132,90,223) !important;
 }
 
